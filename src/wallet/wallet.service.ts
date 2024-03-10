@@ -10,10 +10,6 @@ export class WalletService {
     private readonly walletrepository: typeof Wallet,
   ) {}
 
-  create() {
-    return 'This action adds a new wallet';
-  }
-
   async findAll() {
     return await this.walletrepository.findAll<Wallet>();
   }
