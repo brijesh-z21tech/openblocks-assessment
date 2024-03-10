@@ -1,27 +1,37 @@
-import { Controller, Get, Param, Version } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  UsePipes,
+  ValidationPipe,
+  Version,
+} from '@nestjs/common';
 import { WalletService } from './wallet.service';
+import { FindWalletDTO } from './dto/find-wallet.dto';
 
 @Controller('wallet')
 export class WalletController {
   constructor(private readonly walletService: WalletService) {}
 
   @Version('1')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
-  findAllV1() {
-    return this.walletService.findAll();
-  }
-
-  @Version('2')
-  @Get('/:wallet_address/:from_date/:to_date')
-  findAllV2(
-    @Param('wallet_address') wallet_address: string,
-    @Param('from_date') from_date: string,
-    @Param('to_date') to_date: string,
-  ) {
+  findByQuery(@Query() query: FindWalletDTO) {
     return this.walletService.findRecordByWalletAddress(
-      wallet_address,
-      from_date,
-      to_date,
+      query.wallet_address,
+      query.from_date,
+      query.to_date,
+    );
+  }
+  @Version('2')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Get('/:wallet_address/:from_date/:to_date')
+  findByParams(@Param() params: FindWalletDTO) {
+    return this.walletService.findRecordByWalletAddress(
+      params.wallet_address,
+      params.from_date,
+      params.to_date,
     );
   }
 }
