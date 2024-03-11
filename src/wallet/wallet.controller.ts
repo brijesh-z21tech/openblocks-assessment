@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { WalletService } from './wallet.service';
 import { FindWalletDTO } from './dto/find-wallet.dto';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('wallet')
 export class WalletController {
@@ -16,6 +17,9 @@ export class WalletController {
 
   @Version('1')
   @UsePipes(new ValidationPipe({ transform: true }))
+  @ApiQuery({ name: 'wallet_address' })
+  @ApiQuery({ name: 'from_date' })
+  @ApiQuery({ name: 'to_date' })
   @Get()
   findByQuery(@Query() query: FindWalletDTO) {
     return this.walletService.findRecordByWalletAddress(
@@ -25,6 +29,9 @@ export class WalletController {
     );
   }
   @Version('2')
+  @ApiQuery({ name: 'wallet_address' })
+  @ApiQuery({ name: 'from_date' })
+  @ApiQuery({ name: 'to_date' })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Get('/:wallet_address/:from_date/:to_date')
   findByParams(@Param() params: FindWalletDTO) {
